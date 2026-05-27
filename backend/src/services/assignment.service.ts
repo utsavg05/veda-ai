@@ -1,7 +1,7 @@
 import { Types } from 'mongoose';
-import { Assignment, type AssignmentDocument } from '../models/assignment.model.js';
-import { GeneratedResult, type GeneratedResultDocument } from '../models/result.model.js';
-import type { AssignmentInput, GeneratedResultPayload } from '../types/assignment.types.js';
+import { Assignment, type AssignmentDocument } from '../models/assignment.model';
+import { GeneratedResult, type GeneratedResultDocument } from '../models/result.model';
+import type { AssignmentInput, GeneratedResultPayload } from '../types/assignment.types';
 
 const assignmentResultPopulate = 'result';
 

@@ -3,7 +3,7 @@ import type {
   GeneratedQuestion,
   GeneratedResultPayload,
   GeneratedSection,
-} from '../types/assignment.types.js';
+} from '../types/assignment.types';
 
 export interface GeneratedResultDocument extends Document, GeneratedResultPayload {}
 

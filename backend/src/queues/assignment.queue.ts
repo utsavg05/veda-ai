@@ -1,5 +1,5 @@
 import { Queue } from 'bullmq';
-import { redisConnectionOptions } from '../config/redis.js';
+import { redisConnectionOptions } from '../config/redis';
 
 export const ASSIGNMENT_QUEUE_NAME = 'assignment-generation';
 

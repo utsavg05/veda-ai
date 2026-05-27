@@ -1,6 +1,6 @@
-import type { AssignmentDocument } from '../models/assignment.model.js';
-import type { GeneratedResultPayload, QuestionDifficulty } from '../types/assignment.types.js';
-import { buildAssessmentPrompt } from './prompt.service.js';
+import type { AssignmentDocument } from '../models/assignment.model';
+import type { GeneratedResultPayload, QuestionDifficulty } from '../types/assignment.types';
+import { buildAssessmentPrompt } from './prompt.service';
 
 const difficultyCycle: QuestionDifficulty[] = ['easy', 'medium', 'hard'];
 
@@ -27,7 +27,7 @@ export const generateAssessment = async (
   const sections = assignment.questionTypes.map((questionType, sectionIndex) => {
     const questions = Array.from({ length: questionType.count }, (_value, questionIndex) => ({
       text: `${formatQuestionTypeLabel(questionType.type)} question ${questionIndex + 1} on ${assignment.subject} for class ${assignment.className}`,
-      difficulty: difficultyCycle[(sectionIndex + questionIndex) % difficultyCycle.length],
+      difficulty: difficultyCycle[(sectionIndex + questionIndex) % difficultyCycle.length]!,
       marks: questionType.marks,
     }));
 

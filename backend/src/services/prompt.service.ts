@@ -1,4 +1,4 @@
-import type { AssignmentInput } from '../types/assignment.types.js';
+import type { AssignmentInput } from '../types/assignment.types';
 
 export const buildAssessmentPrompt = (assignment: AssignmentInput): string => {
   const questionTypeSummary = assignment.questionTypes

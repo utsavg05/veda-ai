@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getPdfPlaceholderController } from '../controllers/pdf.controller.js';
+import { getPdfPlaceholderController } from '../controllers/pdf.controller';
 
 const router = Router();
 

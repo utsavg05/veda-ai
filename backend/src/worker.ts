@@ -1,5 +1,5 @@
-import { connectDB } from './config/db.js';
-import { startAssignmentWorker } from './queues/assignment.worker.js';
+import { connectDB } from './config/db';
+import { startAssignmentWorker } from './queues/assignment.worker';
 
 const startWorker = async (): Promise<void> => {
   await connectDB();

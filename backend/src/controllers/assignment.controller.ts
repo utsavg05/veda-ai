@@ -1,8 +1,8 @@
 import type { Request, Response } from 'express';
 import { Types } from 'mongoose';
-import { enqueueAssignmentGeneration } from '../queues/assignment.queue.js';
-import { emitAssignmentUpdate } from '../sockets/socket.js';
-import { generateAssessment } from '../services/ai.service.js';
+import { enqueueAssignmentGeneration } from '../queues/assignment.queue';
+import { emitAssignmentUpdate } from '../sockets/socket';
+import { generateAssessment } from '../services/ai.service';
 import {
   attachResultToAssignment,
   createAssignmentRecord,
@@ -13,10 +13,10 @@ import {
   queueAssignmentAgain,
   saveGeneratedResult,
   updateAssignmentStatus,
-} from '../services/assignment.service.js';
-import type { AssignmentInput, QuestionTypeInput } from '../types/assignment.types.js';
-import { ApiError } from '../utils/ApiError.js';
-import { asyncHandler } from '../utils/asyncHandler.js';
+} from '../services/assignment.service';
+import type { AssignmentInput, QuestionTypeInput } from '../types/assignment.types';
+import { ApiError } from '../utils/ApiError';
+import { asyncHandler } from '../utils/asyncHandler';
 
 const readString = (value: unknown, fieldName: string, required = true): string | undefined => {
   if (typeof value !== 'string') {
@@ -123,15 +123,23 @@ const buildAssignmentInput = (req: Request): AssignmentInput => {
       }
     : undefined;
 
-  return {
+  const assignmentInput: AssignmentInput = {
     title,
     subject,
     className,
     dueDate,
-    instructions,
     questionTypes,
-    material,
   };
+
+  if (instructions) {
+    assignmentInput.instructions = instructions;
+  }
+
+  if (material) {
+    assignmentInput.material = material;
+  }
+
+  return assignmentInput;
 };
 
 const emitStatusUpdate = async (eventName: string, assignmentId: string, payload: Record<string, unknown>): Promise<void> => {
@@ -157,7 +165,7 @@ export const createAssignmentController = asyncHandler(async (req: Request, res:
     throw error instanceof ApiError ? error : new ApiError(500, message);
   }
 
-  return res.status(201).json({
+  res.status(201).json({
     success: true,
     message: 'Assignment queued successfully',
     data: {
@@ -170,7 +178,7 @@ export const createAssignmentController = asyncHandler(async (req: Request, res:
 export const getAssignmentsController = asyncHandler(async (_req: Request, res: Response) => {
   const assignments = await getAssignments();
 
-  return res.json({
+  res.json({
     success: true,
     message: 'Assignments fetched successfully',
     data: assignments,
@@ -179,6 +187,9 @@ export const getAssignmentsController = asyncHandler(async (_req: Request, res: 
 
 export const getAssignmentController = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
+  if (typeof id !== 'string') {
+    throw new ApiError(400, 'Invalid assignment id');
+  }
 
   if (!Types.ObjectId.isValid(id)) {
     throw new ApiError(400, 'Invalid assignment id');
@@ -190,7 +201,7 @@ export const getAssignmentController = asyncHandler(async (req: Request, res: Re
     throw new ApiError(404, 'Assignment not found');
   }
 
-  return res.json({
+  res.json({
     success: true,
     message: 'Assignment fetched successfully',
     data: assignment,
@@ -199,6 +210,10 @@ export const getAssignmentController = asyncHandler(async (req: Request, res: Re
 
 export const regenerateAssignmentController = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
+
+  if (typeof id !== 'string') {
+    throw new ApiError(400, 'Invalid assignment id');
+  }
 
   if (!Types.ObjectId.isValid(id)) {
     throw new ApiError(400, 'Invalid assignment id');
@@ -216,7 +231,7 @@ export const regenerateAssignmentController = asyncHandler(async (req: Request, 
     status: 'queued',
   });
 
-  return res.json({
+  res.json({
     success: true,
     message: 'Assignment queued for regeneration',
     data: assignment,

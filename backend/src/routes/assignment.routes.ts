@@ -4,8 +4,8 @@ import {
   getAssignmentController,
   getAssignmentsController,
   regenerateAssignmentController,
-} from '../controllers/assignment.controller.js';
-import { assignmentUpload } from '../middlewares/upload.middleware.js';
+} from '../controllers/assignment.controller';
+import { assignmentUpload } from '../middlewares/upload.middleware';
 
 const router = Router();
 

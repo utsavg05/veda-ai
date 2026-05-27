@@ -1,14 +1,20 @@
 import type { Server as HttpServer } from 'http';
 import { Server as SocketIOServer } from 'socket.io';
-import type Redis from 'ioredis';
-import { env } from '../config/env.js';
-import { createRedisClient } from '../config/redis.js';
+import { env } from '../config/env';
+import { createRedisClient } from '../config/redis';
 
 const SOCKET_CHANNEL = 'assignment-updates';
 
 let io: SocketIOServer | null = null;
-let subscriber: Redis | null = null;
-const publisher = createRedisClient();
+let subscriber: ReturnType<typeof createRedisClient> | null = null;
+const publisher = createRedisClient() as {
+  publish: (channel: string, message: string) => Promise<number>;
+};
+
+(publisher as { on?: (event: string, listener: (...args: unknown[]) => void) => void }).on?.(
+  'error',
+  () => undefined,
+);
 
 export const initSocket = (server: HttpServer): SocketIOServer => {
   if (io) {
@@ -31,11 +37,17 @@ export const initSocket = (server: HttpServer): SocketIOServer => {
 
   if (!subscriber) {
     subscriber = createRedisClient();
-    subscriber.subscribe(SOCKET_CHANNEL).catch((error) => {
+    (subscriber as { on?: (event: string, listener: (...args: unknown[]) => void) => void }).on?.(
+      'error',
+      () => undefined,
+    );
+    (subscriber as { subscribe: (channel: string) => Promise<unknown> }).subscribe(SOCKET_CHANNEL).catch((error: unknown) => {
       console.error('Socket subscriber failed to subscribe', error);
     });
 
-    subscriber.on('message', (_channel, message) => {
+    (subscriber as {
+      on: (event: 'message', listener: (_channel: string, message: string) => void) => void;
+    }).on('message', (_channel: string, message: string) => {
       if (!io) {
         return;
       }

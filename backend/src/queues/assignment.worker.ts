@@ -1,7 +1,7 @@
 import { Worker } from 'bullmq';
-import { redisConnectionOptions } from '../config/redis.js';
-import { failAssignmentJob, processAssignmentJob } from '../controllers/assignment.controller.js';
-import { ASSIGNMENT_QUEUE_NAME } from './assignment.queue.js';
+import { redisConnectionOptions } from '../config/redis';
+import { failAssignmentJob, processAssignmentJob } from '../controllers/assignment.controller';
+import { ASSIGNMENT_QUEUE_NAME } from './assignment.queue';
 
 export const startAssignmentWorker = (): Worker => {
   const worker = new Worker(

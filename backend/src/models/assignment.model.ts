@@ -4,7 +4,7 @@ import type {
   AssignmentStatus,
   MaterialMetadata,
   QuestionTypeInput,
-} from '../types/assignment.types.js';
+} from '../types/assignment.types';
 
 export interface AssignmentDocument extends Document, AssignmentInput {
   status: AssignmentStatus;

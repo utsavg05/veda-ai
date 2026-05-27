@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from 'express';
-import { env } from '../config/env.js';
-import { ApiError } from '../utils/ApiError.js';
+import { env } from '../config/env';
+import { ApiError } from '../utils/ApiError';
 
 const resolveStatusCode = (error: unknown): number => {
   if (error instanceof ApiError) {

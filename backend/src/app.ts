@@ -1,9 +1,9 @@
 import cors from 'cors';
 import express from 'express';
-import { env } from './config/env.js';
-import { errorMiddleware, notFoundMiddleware } from './middlewares/error.middleware.js';
-import assignmentRoutes from './routes/assignment.routes.js';
-import pdfRoutes from './routes/pdf.routes.js';
+import { env } from './config/env';
+import { errorMiddleware, notFoundMiddleware } from './middlewares/error.middleware';
+import assignmentRoutes from './routes/assignment.routes';
+import pdfRoutes from './routes/pdf.routes';
 
 const app = express();
 
