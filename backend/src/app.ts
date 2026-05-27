@@ -5,7 +5,7 @@ import { errorMiddleware, notFoundMiddleware } from './middlewares/error.middlew
 import assignmentRoutes from './routes/assignment.routes';
 import pdfRoutes from './routes/pdf.routes';
 
-const app = express();
+const app = express()
 
 app.use(
 	cors({
