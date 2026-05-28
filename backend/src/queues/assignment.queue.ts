@@ -3,12 +3,21 @@ import { redisConnectionOptions } from '../config/redis';
 
 export const ASSIGNMENT_QUEUE_NAME = 'assignment-generation';
 
-export const assignmentQueue = new Queue(ASSIGNMENT_QUEUE_NAME, {
-  connection: redisConnectionOptions,
-});
+let assignmentQueue: Queue | null = null;
+
+export const getAssignmentQueue = (): Queue => {
+  if (!assignmentQueue) {
+    assignmentQueue = new Queue(ASSIGNMENT_QUEUE_NAME, {
+      connection: redisConnectionOptions,
+    });
+  }
+
+  return assignmentQueue;
+};
 
 export const enqueueAssignmentGeneration = async (assignmentId: string): Promise<void> => {
-  await assignmentQueue.add(
+  const queue = getAssignmentQueue();
+  await queue.add(
     'generate-assignment',
     {
       assignmentId,

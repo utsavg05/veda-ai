@@ -7,14 +7,7 @@ const SOCKET_CHANNEL = 'assignment-updates';
 
 let io: SocketIOServer | null = null;
 let subscriber: ReturnType<typeof createRedisClient> | null = null;
-const publisher = createRedisClient() as {
-  publish: (channel: string, message: string) => Promise<number>;
-};
-
-(publisher as { on?: (event: string, listener: (...args: unknown[]) => void) => void }).on?.(
-  'error',
-  () => undefined,
-);
+let publisher: ReturnType<typeof createRedisClient> | null = null;
 
 export const initSocket = (server: HttpServer): SocketIOServer => {
   if (io) {
@@ -78,7 +71,15 @@ export const emitAssignmentUpdate = async (eventName: string, payload: unknown):
       io.emit(eventName, payload);
     }
 
-    await publisher.publish(
+    if (!publisher) {
+      publisher = createRedisClient();
+      (publisher as { on?: (event: string, listener: (...args: unknown[]) => void) => void }).on?.(
+        'error',
+        () => undefined,
+      );
+    }
+
+    await (publisher as { publish: (channel: string, message: string) => Promise<number> }).publish(
       SOCKET_CHANNEL,
       JSON.stringify({
         eventName,
